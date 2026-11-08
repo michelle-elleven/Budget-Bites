@@ -1,0 +1,75 @@
+import tkinter as tk
+from tkinter import ttk
+tables = {
+    &quot;Milk&quot;: [
+        (&quot;Meiji&quot;, &quot;$6.97&quot;, &quot;$6.65&quot;, &quot;$6.45&quot;, &quot;$6.95&quot;, &quot;$6.50&quot;),
+        (&quot;Greenfields&quot;, &quot;$6.05&quot;, &quot;$6.64&quot;, &quot;$6.05&quot;, &quot;$6.15&quot;, &quot;$6.06&quot;),
+        (&quot;Marigold&quot;, &quot;$6.65&quot;, &quot;$6.70&quot;, &quot;$6.45&quot;, &quot;$6.90&quot;, &quot;$6.21&quot;),
+        (&quot;Farmhouse&quot;, &quot;$6.14&quot;, &quot;$7.50&quot;, &quot;$6.14&quot;, &quot;$7.30&quot;, &quot;$7.09&quot;),
+        (&quot;Magnolia&quot;, &quot;$6.25&quot;, &quot;$6.20&quot;, &quot;$7.10&quot;, &quot;$6.55&quot;, &quot;$6.04&quot;)
+    ],
+    &quot;Cheese&quot;: [
+        (&quot;Cow Head&quot;, &quot;$3.95&quot;, &quot;$4.65&quot;, &quot;$2.97&quot;, &quot;$4.95&quot;, &quot;$3.35&quot;),
+        (&quot;Laughing Cow&quot;, &quot;$4.38&quot;, &quot;$4.75&quot;, &quot;$4.38&quot;, &quot;$5.09&quot;, &quot;$6.90&quot;),
+        (&quot;Philadelphia&quot;, &quot;$7.45&quot;, &quot;$6.15&quot;, &quot;$6.15&quot;, &quot;$6.78&quot;, &quot;$6.23&quot;),
+( &quot;Snow&quot;, &quot;$3.97&quot;, &quot;$4.50&quot;, &quot;$4.50&quot;, &quot;$4.32&quot;, &quot;$4.25&quot;)
+    ],
+    &quot;Butter&quot;: [
+        (&quot;SCS&quot;, &quot;$6.35&quot;, &quot;$6.35&quot;, &quot;$6.35&quot;, &quot;$5.95&quot;, &quot;$5.37&quot;),
+        (&quot;Butter Cup&quot;, &quot;$2.89&quot;, &quot;$2.95&quot;, &quot;$2.89&quot;, &quot;$2.66&quot;, &quot;$2.51&quot;),
+        (&quot;Cow Head&quot;, &quot;$5.00&quot;, &quot;$4.60&quot;, &quot;$4.60&quot;, &quot;$4.60&quot;, &quot;$4.80&quot;),
+(&quot;Golden Churn&quot;, &quot;$6.35&quot;, &quot;$6.35&quot;, &quot;$6.35&quot;,&quot;$6.35&quot;,&quot;$6.35&quot; ),
+        (&quot;Lurpak&quot;, &quot;$6.72&quot;, &quot;$9.35&quot;, &quot;$6.72&quot;, &quot;$6.72&quot;, &quot;$7.98&quot;),
+  ],
+
+    &quot;Yogurt&quot;: [
+        (&quot;Marigold&quot;, &quot;$6.60&quot;, &quot;$6.76&quot;, &quot;$6.40&quot;, &quot;$6.79&quot;, &quot;$6.39&quot;),
+        (&quot;Meiji Greek&quot;, &quot;$7.25&quot;, &quot;$7.95&quot;, &quot;$7.95&quot;, &quot;$6.15&quot;, &quot;$6.15&quot;),
+        (&quot;Farm Fresh&quot;, &quot;$6.64&quot;, &quot;$6.65&quot;, &quot;$6.95&quot;, &quot;$6.66&quot;, &quot;$7.22&quot;),
+(&quot;Farmers Union&quot;, &quot;$9.15&quot;, &quot;$9.39&quot;, &quot;$9.50&quot;, &quot;$9.35&quot;, &quot;$9.30&quot;)
+]
+}
+root = tk.Tk()
+root.title(&quot;Budget Bites: Dairy Products&quot;)
+root.geometry(&quot;700x500&quot;)
+def create_table(frame, data):
+   
+  for widget in frame.winfo_children():
+        widget.destroy()
+headers = [&quot;    &quot;, &quot;Fairprice&quot;, &quot;Giant&quot;, &quot;Sheng Siong&quot;, &quot;Cold Storage&quot;, &quot;Prime&quot;]
+        column_width = 15
+
+    for j, header in enumerate(headers):
+        header_label = tk.Label(frame, text=header, borderwidth=0.5, relief=&quot;solid&quot;,
+width=column_width, bg=&quot;lightblue&quot;)
+        header_label.grid(row=0, column=j)
+    all_prices = [(i, j, float(data[i][j].strip(&quot;$&quot;))) for i in range(len(data)) for j in range(1, 6)]
+    min_price_cell = min(all_prices, key=lambda x: x[2])  # (row, col, price)
+    max_price_cell = max(all_prices, key=lambda x: x[2])  # (row, col, price)
+
+    for i, row_data in enumerate(data):
+        for j, cell_data in enumerate(row_data):
+            if j == 0:  # Highlight Brand column
+                bg_color = &quot;lightblue&quot;
+            elif (i, j) == (min_price_cell[0], min_price_cell[1]):
+                bg_color = &quot;lightgreen&quot;  # Highlight lowest price
+            elif (i, j) == (max_price_cell[0], max_price_cell[1]):
+                bg_color = &quot;salmon&quot;  # Highlight highest price
+            else:
+                bg_color = &quot;white&quot;  # Default background
+            cell_label = tk.Label(frame, text=cell_data, borderwidth=0.5, relief=&quot;solid&quot;,
+width=column_width, bg=bg_color)
+            cell_label.grid(row=i+1, column=j)
+def update_table(*args):
+    selected_table = table_var.get()
+    data = tables[selected_table]
+    create_table(frame, data)
+table_var = tk.StringVar(value=&quot;Milk&quot;)  # Default value
+dropdown = ttk.Combobox(root, textvariable=table_var, values=list(tables.keys()),
+state=&quot;readonly&quot;)
+dropdown.bind(&quot;&lt;&lt;ComboboxSelected&gt;&gt;&quot;, update_table)
+dropdown.pack(pady=10)
+frame = tk.Frame(root)
+frame.pack(pady=20)
+create_table(frame, tables[&quot;Milk&quot;])
+root.mainloop()
